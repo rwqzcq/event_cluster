@@ -18,7 +18,7 @@ word = '破产'
 # s = hownet.calculate_word_similarity(word1, word2)
 
 
-class HowNet:
+class HowNetSim:
     '''
     Hownet调用对象
     '''
@@ -68,7 +68,7 @@ class HowNet:
 
 
 
-hn = HowNet()
+hn = HowNetSim()
 # r = hn.get_one_word_yiyuan(word)
 # print(r)
 # word = "亏损"
