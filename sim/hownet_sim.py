@@ -45,37 +45,44 @@ class HowNetSim:
         '''
         动词的比较
 
+        也可以用来比较动词加宾语
+
         计算公式为 2 * 公共部分 / (word1 + word2)
 
         openHownet自带的方法比这个要好
 
         比如亏损和破产 这个方法的相似度为0.6 而自带的方法为0.73
+
+        如果HowNet里面没有就直接返回一个Tuble，第一个参数为false，第二个参数为dHowNet里面没有的那个词
         '''
         r1 = self.get_one_word_yiyuan(word1)
         if r1 == False:
-            return 0
+            raise Exception(word1)
+            # return False,r1
         r2 = self.get_one_word_yiyuan(word2)
-        if r2 == 0:
-            return False
+        if r2 == False:
+            raise Exception(word2)
+            # return False,r2
         r1 = np.array(r1)
         r2 = np.array(r2)
         common = np.intersect1d(r1, r2)
 
         sim = 2 * len(common) / (len(r1) + len(r2))
+
         return sim
         
         
 
 
 
-hn = HowNetSim()
-# r = hn.get_one_word_yiyuan(word)
-# print(r)
-# word = "亏损"
-# r = hn.get_one_word_yiyuan(word)
-# print(r)
-s = hn.word_sim_v_dx('打架了', '打电话')
-print(s)
+# hn = HowNetSim()
+# # r = hn.get_one_word_yiyuan(word)
+# # print(r)
+# # word = "亏损"
+# # r = hn.get_one_word_yiyuan(word)
+# # print(r)
+# s = hn.word_sim_v_dx('打架了', '打电话')
+# print(s)
 
 # hownet = Standards.HowNetDict()
 
