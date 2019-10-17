@@ -1,4 +1,3 @@
-import requests
 import json
 from sim.hownet_sim import HowNetSim
 
@@ -51,30 +50,46 @@ class ClusterDX:
 
         list_len = len(words)
 
-        not_in_hownet = {} # HowNet中没有的词都列出来
+        not_in_hownet = {} # HowNet中没有的短语都列出来
         not_in_hownet[binyu]  = []
+
         for index, word_1 in enumerate(words):
+            # 首先进行义原过滤
+            if self.hownet.get_one_word_yiyuan(word_1) == False:
+                not_in_hownet[binyu].append(word_1)
+                continue
+
             # 一个词只有一个结果的情况下则过滤
             if self.find_ele(event_types, word_1) == True:
                 continue 
-            # 这个词在HowNet中没有的情况下则过滤
-            if word_1 in not_in_hownet[binyu]:
-                continue
+
+            # # 这个词在HowNet中没有的情况下则过滤
+            # if word_1 in not_in_hownet[binyu]:
+            #     continue
+
             # 不存在就创建一个类型
             if word_1 not in event_types: 
                 event_types[word_1] = [word_1]  
+            
             next_index = index + 1
             for index_2 in range(next_index, list_len): # 左闭右开
                 word_2 = words[index_2]
-                # 这个词在HowNet中没有的情况下则过滤
-                if word_2 in not_in_hownet[binyu]:
+                # 再次进行义原过滤
+                if self.hownet.get_one_word_yiyuan(word_2) == False:
+                    not_in_hownet[binyu].append(word_2)
                     continue
+                # # 这个词在HowNet中没有的情况下则过滤
+                # if word_2 in not_in_hownet[binyu]:
+                #     continue
                 try:
                     s = self.sim(word_1, word_2)
                 except Exception as e:
                     # HowNet中没有这个组合的义原
-                    not_in_hownet[binyu].append(str(e))
+                    e = str(e)
+                    if e not in not_in_hownet[binyu]:
+                        not_in_hownet[binyu].append(e)
                     continue
+                # print(not_in_hownet[binyu])
                 # 两个词都有则计算相似度
                 print('''{} - {} -相似度: {}'''.format(word_1, word_2, s))
                 if s >= self.threshold:

@@ -2,21 +2,6 @@ from OpenHowNet.HowNet import Standards
 import numpy as np
 import json
 
-word = '破产'
-# hownet = Standards.HowNetDict()
-
-# 获取破产的完整信息
-# full_info = hownet.get(word)
-# with open('./' + word + '.json', 'w', encoding='utf-8') as f:
-#     json.dump(full_info, f, ensure_ascii=False)
-
-# 获取破产的义原
-# yiyuan = hownet.get_sememes_by_word(word)
-# print(yiyuan)
-
-# hownet.initialize_sememe_similarity_calculation()
-# s = hownet.calculate_word_similarity(word1, word2)
-
 
 class HowNetSim:
     '''
@@ -32,7 +17,7 @@ class HowNetSim:
         '''
         sememes = self.hn.get_sememes_by_word(word)
         if len(sememes) == 0:
-            print(word + "在Hownet中不存在义原描述")
+            # print(word + "在Hownet中不存在义原描述")
             return False
         
         r = []
@@ -72,20 +57,3 @@ class HowNetSim:
         return sim
         
         
-
-
-
-# hn = HowNetSim()
-# # r = hn.get_one_word_yiyuan(word)
-# # print(r)
-# # word = "亏损"
-# # r = hn.get_one_word_yiyuan(word)
-# # print(r)
-# s = hn.word_sim_v_dx('打架了', '打电话')
-# print(s)
-
-# hownet = Standards.HowNetDict()
-
-# hownet.initialize_sememe_similarity_calculation()
-# s = hownet.calculate_word_similarity(word0 = '破产', word1 = '亏损')
-# print(s)
