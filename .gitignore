@@ -4,3 +4,4 @@ OpenHowNet
 tests
 __pycache__
 client
+dataset/not_in_hownet.json
