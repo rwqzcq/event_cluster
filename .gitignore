@@ -5,3 +5,6 @@ tests
 __pycache__
 client
 dataset/not_in_hownet.json
+word2vec/word2vec_baike
+word2vec/config.py
+results

@@ -91,7 +91,8 @@ class ClusterDX:
 
         for index, word_1 in enumerate(words):
             # 首先进行义原过滤
-            if self.hownet.get_one_word_yiyuan(word_1) == False:
+            #if self.hownet.get_one_word_yiyuan(word_1) == False:
+            if self.filter_word(word_1) == False:
                 not_in_hownet.append(word_1)
                 continue
 
@@ -112,7 +113,8 @@ class ClusterDX:
             for index_2 in range(next_index, list_len): # 左闭右开
                 word_2 = words[index_2]
                 # 再次进行义原过滤
-                if self.hownet.get_one_word_yiyuan(word_2) == False:
+                # if self.hownet.get_one_word_yiyuan(word_2) == False:
+                if self.filter_word(word_2) == False:
                     not_in_hownet.append(word_2)
                     continue
                 # # 这个词在HowNet中没有的情况下则过滤
@@ -259,9 +261,15 @@ class ClusterDX:
             "not_in_hownet" : not_in_hownet
         }
     
-    def find_ele(self, dic, ele):
+    def filter_word(self, word):
         '''
         过滤
+        '''
+        return self.hownet.get_one_word_yiyuan(word)
+    
+    def find_ele(self, dic, ele):
+        '''
+        去重
         '''
         # return ele in dic
 
@@ -271,6 +279,52 @@ class ClusterDX:
         return False
             
 
+
+class ClusterDXWord2vec(ClusterDX):
+    def __init__(self, word_list, threshold):
+        '''
+        :param word_list dict 每一次只传入
+            {
+                '出生于': 
+                    [
+                        '出生于湘潭',
+                        '出生于湖北'
+                    ],
+                '生于' :
+                    [
+                        '生于武汉',
+                        '生于夏花',
+                    ]
+                
+            }
+        '''
+        self.word_list = word_list # 触发词列表
+        self.threshold = threshold # 阈值
+        self.word_2_vec = None
+
+    def set_model(self, model_load_func):
+        '''
+        '''
+        self.word_2_vec = model_load_func()
+
+    def sim(self, vi, vj):
+        '''
+        计算相似度
+        vi {}
+        vj {}
+        '''
+        try:
+            s = self.word_2_vec.wv.similarity(vi, vj)
+        except Exception as e:
+            l = str(e)
+            begin=l.find("'")
+            end=l.rfind("'")
+            error_word=l[begin+1:end]
+            raise Exception(error_word)
+        return s
+
+    def filter_word(self, word):
+        return False
 
 # if __name__ == "__main__":
 #     # word1 = "关闭"
