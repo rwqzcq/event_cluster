@@ -67,6 +67,7 @@
 ## 4. 利用Phrase2Vec已经训练好的词向量和K-means进行训练
 
 ### 4.1 类个数的确定
+由于训练的一次的时间过长，因此可以设置在7000类左右
 
 ### 4.2 谓宾要比谓语好的地方
 分类的结果应该跟hanlp训练的效果一样，因此要加大类的数量
@@ -117,3 +118,7 @@ GPU训练
 ```sh
 pip install package_name -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
 ```
+
+2. Tensorflow实现K-means
+- https://blog.csdn.net/qq_30615903/article/details/80997232
+- https://www.jianshu.com/p/c1caccafd2d6
