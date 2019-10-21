@@ -83,6 +83,42 @@ class KmeansCluster:
 
 
 
+def test_cluster_number(vectors, model_save_path, img_save_path, k_min, k_max, step = 1,):
+    """测度最合适的类的个数
+    
+    Arguments:
+        vectors {list} -- 向量
+        model_save_path {str} -- 模型保存路径
+        img_save_path {str} -- 图形保存路径
+        k_min {int} -- 最小的K 
+        k_max {[type]} -- 最大的K
+
+    Keyword Arguments:
+        step {int} -- [默认的步长] (default: {1})
+    """
+
+
+    SSE = []  # 存放每次结果的误差平方和
+    vec_min = k_min
+    vec_max = k_max
+    vec_qujian = range(vec_min,vec_max, step)
+
+    for k in vec_qujian:
+        print(k)
+        estimator = KMeans(n_clusters=k)  # 构造聚类器
+        estimator.fit(vectors)
+        abs_path = model_save_path + str(k) + '.pkl'
+        # estimator = joblib.load(abs_path)
+        joblib.dump(estimator, abs_path)
+        SSE.append(estimator.inertia_)
+    plt.rcParams['savefig.dpi'] = 300 #图片像素
+    plt.rcParams['figure.dpi'] = 300 #分辨率
+    X = vec_qujian
+    plt.xlabel('k')
+    plt.ylabel('SSE')
+    plt.plot(X,SSE,'o-')
+    plt.savefig(img_save_path + '''手肘图_{}_{}.png'''.format(vec_min, vec_max))
+    plt.show()
 
 
 
@@ -91,28 +127,8 @@ if __name__ == '__main__':
     """使用K-means和Phrase2vec来实现谓宾短语聚类
     """
     
-    path = os.path.abspath('./results/过滤后的向量.json')
-    with open(path, 'r', encoding='utf-8') as f:
-        vectors = json.load(f)
+    # path = os.path.abspath('./results/过滤后的向量.json')
+    # with open(path, 'r', encoding='utf-8') as f:
+    #     vectors = json.load(f)
     
 
-    SSE = []  # 存放每次结果的误差平方和
-    vec_min = 4000
-    vec_max = 7000
-    step = 250
-    vec_qijian = range(vec_min,vec_max, step)
-    for k in vec_qijian:
-        print(k)
-        estimator = KMeans(n_clusters=k)  # 构造聚类器
-        estimator.fit(vectors)
-        abs_path = 'I:\\代码\\事理图谱\\event_cluster\\模型文件\\hanlp_FastText\\' + str(k) + '.pkl'
-        joblib.dump(estimator, abs_path)
-        SSE.append(estimator.inertia_)
-    # plt.figure.figsize = []
-    plt.rcParams['savefig.dpi'] = 300 #图片像素
-    plt.rcParams['figure.dpi'] = 300 #分辨率
-    X = vec_qijian
-    plt.xlabel('k')
-    plt.ylabel('SSE')
-    plt.plot(X,SSE,'o-')
-    plt.savefig('''../手肘图_{}_{}.jpg'''.format(vec_min, vec_max))
